@@ -1,0 +1,28 @@
+{
+  "name": "week-12",
+  "version": "1.0.0",
+  "description": "EmployeeTracker",
+  "main": "EmployeeTracker.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pmulhern/EmployeeGenerator.git"
+  },
+  "keywords": [
+    "MySQL",
+    "Inquirer",
+    "Node"
+  ],
+  "author": "Patrick Mulhern",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pmulhern/EmployeeGenerator/issues"
+  },
+  "homepage": "https://github.com/pmulhern/EmployeeGenerator#readme",
+  "dependencies": {
+    "inquirer": "^7.3.3",
+    "mysql": "^2.18.1"
+  }
+}
