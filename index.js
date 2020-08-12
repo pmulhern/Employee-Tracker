@@ -267,27 +267,40 @@ function addRole() {
   })}
   )}
 
+  
     
   function removeEmployee() {
+    let employees = []
+    connection.query(`SELECT DISTINCT first_name as "name" FROM employee e WHERE first_name IS NOT NULL;`, function(err, results) {
+        if (err) throw err;
+        console.table(results)
+        
+        for (let i = 0; i < results.length; i++) {
+            let tempEmp = results[i].name;
+            employees.push(tempEmp);
+        }
+        console.log(employees)
+
   inquirer
   .prompt([
   {
-  name: "id",
-  type: "input",
-  message: "What is the employee's id (review Emplyee Table if you do not know)?",
+  name: "name",
+  type: "list",
+  message: "Please select employee to remove?",
+  choices: employees
   }
   ])
   .then(function(answer) {
 
   connection.query("DELETE FROM employee WHERE ?",
   {
-  id: answer.id,
+  first_name: answer.name,
   },
   function(err, results) {
   if (err) throw err;
   // console.table(results);
   start();
-
+})
   })}
   )}
 
