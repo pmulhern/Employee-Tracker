@@ -144,7 +144,8 @@ function viewAllEployees() {
 
       function addEmployee() {
         inquirer
-        .prompt({
+        .prompt([
+        {
           name: "first",
           type: "input",
           message: "What is the employee's first name",
@@ -153,7 +154,8 @@ function viewAllEployees() {
           name: "last",
           type: "input",
           message: "What is the employee's last name",
-        })
+        }
+      ])
         .then(function(answer) {
     
         connection.query("INSERT INTO employee SET ?",
@@ -163,7 +165,7 @@ function viewAllEployees() {
         },
         function(err, results) {
           if (err) throw err;
-          console.table(results);
+          // console.table(results);
           start();
     
         })}
