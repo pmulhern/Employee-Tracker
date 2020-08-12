@@ -12,7 +12,12 @@
 -- FROM department dt 
 
 USE employee_tracker;
-SELECT e.id, e.first_name, e.last_name, title, dt.name, salary, m.first_name as "manager" FROM department dt left join role on dt.id = role.department_id left join employee e on role.id = e.role_id left join employee m on m.id = e.manager_id ORDER BY e.id ASC
+SELECT e.id, e.first_name, e.last_name, title, dt.name, salary, e.manager_id, m.first_name
+FROM department dt 
+left join role on dt.id = role.department_id 
+left join employee e on role.id = e.role_id 
+left join employee m on m.id = e.manager_id
+ORDER BY e.id ASC
 
 
 

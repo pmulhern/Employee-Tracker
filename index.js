@@ -117,18 +117,24 @@ function viewAllRoles() {
   })}
 
 function viewByDept() {
+    let departments = []
+connection.query(`SELECT distinct dt.name as "department" FROM department dt ORDER BY dt.name ASC;`, function(err, results) {
+    if (err) throw err;
+    // console.table(results)
+
+    // console.table(results);
+    for (let i = 0; i < results.length; i++) {
+        let tempDept = results[i].department;
+        departments.push(tempDept);
+    }
+    // console.log(departments)
+
 inquirer
 .prompt({
   name: "department",
   type: "list",
   message: "What department would you like to view?",
-  choices: [
-  "Engineering", 
-  "Finance", 
-  "Human Resources",
-  "Legal",
-  "Sales"
-  ]
+  choices: departments
 })
 .then(function(answer) {
 
@@ -137,6 +143,7 @@ connection.query(`SELECT dt.name as "department", e.first_name as "first name", 
   console.table(results);
   start();
 
+})
 })}
 )}
 
