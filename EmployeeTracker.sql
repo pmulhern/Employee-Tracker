@@ -18,8 +18,8 @@ CREATE TABLE employee (
 id int auto_increment primary key,
 first_name VARCHAR(30),
 last_name VARCHAR(30),
-role_id int references role(id),
-manager_id INT 
+role_id int references role (id),
+manager_id int auto_increment
 );
 
 
