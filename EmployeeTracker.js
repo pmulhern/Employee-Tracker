@@ -170,3 +170,29 @@ function viewAllEployees() {
     
         })}
         )}
+
+    
+        function removeEmployee() {
+          inquirer
+          .prompt([
+          {
+            name: "id",
+            type: "input",
+            message: "What is the employee's id (review Emplyee Table if you do not know)?",
+          }
+        ])
+          .then(function(answer) {
+      
+          connection.query("DELETE FROM employee WHERE ?",
+          {
+            id: answer.id,
+          },
+          function(err, results) {
+            if (err) throw err;
+            // console.table(results);
+            start();
+      
+          })}
+          )}
+
+          
