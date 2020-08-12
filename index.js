@@ -305,48 +305,74 @@ function addRole() {
   )}
 
   function removeDept() {
+
+    let departments = []
+    connection.query(`SELECT distinct dt.name as "department" FROM department dt ORDER BY dt.name ASC;`, function(err, results) {
+        if (err) throw err;
+        console.table(results)
+        
+        for (let i = 0; i < results.length; i++) {
+            let tempDept = results[i].department;
+            departments.push(tempDept);
+        }
+        console.log(departments)
+
     inquirer
     .prompt([
     {
-    name: "DeptID",
-    type: "input",
-    message: "What is the depratment's id (review Department Table if you do not know)?",
+    name: "DeptName",
+    type: "list",
+    message: "Please select department to remove?",
+    choices: departments
     }
     ])
     .then(function(answer) {
   
     connection.query("DELETE FROM department WHERE ?",
     {
-    id: answer.DeptID,
+    name: answer.DeptName,
     },
     function(err, results) {
     if (err) throw err;
     // console.table(results);
     start();
-  
+  })
     })}
     )}
 
     function removeRole() {
+
+        let roles = []
+        connection.query(`SELECT distinct title as "role" FROM role;`, function(err, results) {
+            if (err) throw err;
+            // console.table(results)
+            
+            for (let i = 0; i < results.length; i++) {
+                let tempRole = results[i].role;
+                roles.push(tempRole);
+            }
+            // console.log(roles)
+
       inquirer
       .prompt([
       {
-      name: "RoleID",
-      type: "input",
-      message: "What is the role's id you would like to remove?",
+      name: "RoleName",
+      type: "list",
+      message: "Please select role to remove?",
+      choices: roles
       }
       ])
       .then(function(answer) {
     
       connection.query("DELETE FROM role WHERE ?",
       {
-      id: answer.RoleID,
+      title: answer.RoleName,
       },
       function(err, results) {
       if (err) throw err;
       // console.table(results);
       start();
-    
+    })
       })}
       )}
 
