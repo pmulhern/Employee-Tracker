@@ -95,6 +95,7 @@ function start() {
     });
 }
 
+// View all Employees
 function viewAllEployees() {
   connection.query(`SELECT e.id, e.first_name, e.last_name, title, dt.name, salary, m.first_name as "manager" FROM employee e left join role on role.id = e.role_id left join department dt on dt.id = role.department_id left join employee m on m.id = e.manager_id  ORDER BY e.id ASC;`, function(err, results) {
     if (err) throw err;
@@ -102,6 +103,7 @@ function viewAllEployees() {
     start();
   })}
 
+// View all Departments
 function viewAllDept() {
   connection.query(`SELECT distinct dt.id as "Dept ID", dt.name as "department" FROM department dt ORDER BY dt.name ASC;`, function(err, results) {
     if (err) throw err;
@@ -109,6 +111,7 @@ function viewAllDept() {
     start();
   })}
 
+// View all Roles
 function viewAllRoles() {
   connection.query(`SELECT distinct id as "Role ID", title as "Role", salary as "Salary" FROM role ORDER BY title;`, function(err, results) {
     if (err) throw err;
@@ -116,13 +119,12 @@ function viewAllRoles() {
     start();
   })}
 
+// View Employees by Department
 function viewByDept() {
     let departments = []
 connection.query(`SELECT distinct dt.name as "department" FROM department dt ORDER BY dt.name ASC;`, function(err, results) {
     if (err) throw err;
     // console.table(results)
-
-    // console.table(results);
     for (let i = 0; i < results.length; i++) {
         let tempDept = results[i].department;
         departments.push(tempDept);
@@ -147,18 +149,25 @@ connection.query(`SELECT dt.name as "department", e.first_name as "first name", 
 })}
 )}
 
+
 function viewByMgr() {
+    let managers = []
+connection.query(`SELECT DISTINCT m.first_name as "manager" FROM employee e left join employee m on m.id = e.manager_id WHERE m.first_name IS NOT NULL;`, function(err, results) {
+    if (err) throw err;
+    console.table(results)
+    
+    for (let i = 0; i < results.length; i++) {
+        let tempMgrs = results[i].manager;
+        managers.push(tempMgrs);
+    }
+    console.log(managers)
+
   inquirer
   .prompt({
     name: "manager",
     type: "list",
     message: "What manager would you like to view?",
-    choices: [
-    "Ashley", 
-    "John", 
-    "Mike",
-    "Sarah"
-    ]
+    choices: managers
   })
   .then(function(answer) {
 
@@ -166,6 +175,7 @@ function viewByMgr() {
     if (err) throw err;
     console.table(results);
     start();
+})
   })}
   )}
 
