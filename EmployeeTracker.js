@@ -33,8 +33,10 @@ function start() {
       message: "What would you like to do?",
       choices: [
       "View all Employees", 
-      "View all Emplyees by Department", 
-      "View all Employees by Manager",
+      "View all Departments",
+      "View all Roles",
+      "View Emplyees by Department", 
+      "View Employees by Manager",
       "Add Employee",
       "Remove Employee",
       "Update Employee Role",
@@ -45,11 +47,17 @@ function start() {
     .then(function(answer) {
       // based on their answer, either call the bid or the post functions
       if (answer.userAction === "View all Employees") {
-        viewAll();
+        viewAllEployees();
       }
-              else if(answer.userAction === "View all Emplyees by Department") {
+      else if(answer.userAction === "View all Departments") {
+        viewAllDept();
+      }       
+      else if(answer.userAction === "View all Roles") {
+        viewAllRoles();
+      }       
+              else if(answer.userAction === "View Emplyees by Department") {
         viewByDept();
-      }       else if(answer.userAction === "View all Employees by Manager") {
+      }       else if(answer.userAction === "View Employees by Manager") {
         viewByMgr();
       }       else if(answer.userAction === "Add Employee") {
         addEmployee();
@@ -66,12 +74,26 @@ function start() {
     });
 }
 
-function viewAll() {
-  connection.query(`SELECT e.id, e.first_name, e.last_name, title, dt.name, salary, m.first_name as "manager" FROM department dt left join role on dt.id = role.department_id left join employee e on role.id = e.role_id left join employee m on m.id = e.manager_id ORDER BY e.id ASC;`, function(err, results) {
+function viewAllEployees() {
+  connection.query(`SELECT e.id, e.first_name, e.last_name, title, dt.name, salary, m.first_name as "manager" FROM employee e left join role on role.id = e.role_id left join department dt on dt.id = role.department_id left join employee m on m.id = e.manager_id  ORDER BY e.id ASC;`, function(err, results) {
     if (err) throw err;
     console.table(results);
     start();
   })}
+
+  function viewAllDept() {
+    connection.query(`SELECT distinct dt.name as "department" FROM department dt ORDER BY dt.name ASC;`, function(err, results) {
+      if (err) throw err;
+      console.table(results);
+      start();
+    })}
+
+  function viewAllRoles() {
+    connection.query(`SELECT distinct title as "Role", salary as "Salary" FROM role ORDER BY title;`, function(err, results) {
+      if (err) throw err;
+      console.table(results);
+      start();
+    })}
 
   function viewByDept() {
     inquirer
@@ -89,7 +111,7 @@ function viewAll() {
     })
     .then(function(answer) {
 
-    connection.query(`SELECT dt.name as "department", e.first_name as "first name", e.last_name as "last name", e.id as "id", title, salary, m.first_name as "manager" FROM department dt left join role on dt.id = role.department_id left join employee e on role.id = e.role_id left join employee m on m.id = e.manager_id WHERE dt.name = '${answer.department}';`, function(err, results) {
+    connection.query(`SELECT dt.name as "department", e.first_name as "first name", e.last_name as "last name", e.id as "id", title, salary, m.first_name as "manager" FROM employee e left join role on role.id = e.role_id left join department dt on dt.id = role.department_id left join employee m on m.id = e.manager_id WHERE dt.name = '${answer.department}';`, function(err, results) {
       if (err) throw err;
       console.table(results);
       start();
@@ -104,18 +126,45 @@ function viewAll() {
         type: "list",
         message: "What manager would you like to view?",
         choices: [
-        "Ashley Rodriguez", 
-        "John Doe", 
-        "Mike Chan",
-        "Sarah Lourd"
+        "Ashley", 
+        "John", 
+        "Mike",
+        "Sarah"
         ]
       })
       .then(function(answer) {
   
-      connection.query(`SELECT department.name as "department", employee.first_name, employee.last_name, employee.id as "id", title, salary, manager.first_name as "manager" FROM department left join role on department.id = role.department_id left join employee on role.id = employee.role_id left join manager on employee.id = manager.id WHERE department.name = '${answer.manager}';`, function(err, results) {
+      connection.query(`SELECT m.first_name as "manager", e.first_name as "first name", e.last_name as "last name", e.id as "id", title, salary FROM department dt left join role on dt.id = role.department_id left join employee e on role.id = e.role_id left join employee m on m.id = e.manager_id WHERE m.first_name = '${answer.manager}';`, function(err, results) {
         if (err) throw err;
         console.table(results);
         start();
-  
       })}
       )}
+
+
+      function addEmployee() {
+        inquirer
+        .prompt({
+          name: "first",
+          type: "input",
+          message: "What is the employee's first name",
+        },
+        {
+          name: "last",
+          type: "input",
+          message: "What is the employee's last name",
+        })
+        .then(function(answer) {
+    
+        connection.query("INSERT INTO employee SET ?",
+        {
+          first_name: answer.first,
+          last_name: answer.last
+        },
+        function(err, results) {
+          if (err) throw err;
+          console.table(results);
+          start();
+    
+        })}
+        )}
