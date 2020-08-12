@@ -67,7 +67,7 @@ function start() {
 }
 
 function viewAll() {
-  connection.query(`SELECT employee.id, employee.first_name, employee.last_name, title, dt.name, salary, manager.first_name as "manager" FROM department dt left join role on dt.id = role.department_id left join employee on role.id = employee.role_id left join manager on employee.id = manager.id ORDER BY employee.id ASC;`, function(err, results) {
+  connection.query(`SELECT e.id, e.first_name, e.last_name, title, dt.name, salary, m.first_name as "manager" FROM department dt left join role on dt.id = role.department_id left join employee e on role.id = e.role_id left join employee m on m.id = e.manager_id ORDER BY e.id ASC;`, function(err, results) {
     if (err) throw err;
     console.table(results);
     start();
@@ -89,7 +89,7 @@ function viewAll() {
     })
     .then(function(answer) {
 
-    connection.query(`SELECT department.name as "department", employee.first_name, employee.last_name, employee.id as "id", title, salary, manager.first_name as "manager" FROM department left join role on department.id = role.department_id left join employee on role.id = employee.role_id left join manager on employee.id = manager.id WHERE department.name = '${answer.department}';`, function(err, results) {
+    connection.query(`SELECT dt.name as "department", e.first_name as "first name", e.last_name as "last name", e.id as "id", title, salary, m.first_name as "manager" FROM department dt left join role on dt.id = role.department_id left join employee e on role.id = e.role_id left join employee m on m.id = e.manager_id WHERE dt.name = '${answer.department}';`, function(err, results) {
       if (err) throw err;
       console.table(results);
       start();
