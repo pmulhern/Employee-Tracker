@@ -45,6 +45,7 @@ function start() {
       "Remove Role",
       "Update Employee Role",
       "Update Employee Manager",
+      "View Department Utilization",
       "End Session"
       ]
     })
@@ -89,7 +90,10 @@ function start() {
       else if(answer.userAction === "Update Employee Manager") {
         updateMgr();
       } 
-              else{
+      else if(answer.userAction === "View Department Utilization") {
+        deptSum();
+      }    
+      else{
         connection.end();
       }
     });
@@ -97,7 +101,7 @@ function start() {
 
 // View all Employees
 function viewAllEployees() {
-  connection.query(`SELECT e.id, e.first_name, e.last_name, title, dt.name, salary, m.first_name as "manager" FROM employee e left join role on role.id = e.role_id left join department dt on dt.id = role.department_id left join employee m on m.id = e.manager_id  ORDER BY e.id ASC;`, function(err, results) {
+  connection.query(`SELECT e.id as "ID", e.first_name as "First Name", e.last_name as "Last Name", title as "Role", dt.name as "Department Name", salary as "Salary", m.first_name as "Manager" FROM employee e left join role on role.id = e.role_id left join department dt on dt.id = role.department_id left join employee m on m.id = e.manager_id  ORDER BY e.id ASC;`, function(err, results) {
     if (err) throw err;
     console.table(results);
     start();
@@ -105,7 +109,7 @@ function viewAllEployees() {
 
 // View all Departments
 function viewAllDept() {
-  connection.query(`SELECT distinct dt.id as "Dept ID", dt.name as "department" FROM department dt ORDER BY dt.name ASC;`, function(err, results) {
+  connection.query(`SELECT distinct dt.id as "Dept ID", dt.name as "Department Name" FROM department dt ORDER BY dt.name ASC;`, function(err, results) {
     if (err) throw err;
     console.table(results);
     start();
@@ -497,4 +501,34 @@ function updateMgr() {
 })}
 )}
 
+ 
+  // View Employees by Department
+function deptSum() {
+    let departments = []
+connection.query(`SELECT distinct dt.name as "department" FROM department dt ORDER BY dt.name ASC;`, function(err, results) {
+    if (err) throw err;
+    // console.table(results)
+    for (let i = 0; i < results.length; i++) {
+        let tempDept = results[i].department;
+        departments.push(tempDept);
+    }
+    // console.log(departments)
+
+inquirer
+.prompt({
+  name: "department",
+  type: "list",
+  message: "Choose department to view total utilized budget.",
+  choices: departments
+})
+.then(function(answer) {
+
+connection.query(`SELECT DISTINCT dt.name as "Department", SUM(salary) as "Total Department Salary" FROM employee e left join role on role.id = e.role_id left join department dt on dt.id = role.department_id left join employee m on m.id = e.manager_id WHERE dt.name = '${answer.department}';`, function(err, results) {
+  if (err) throw err;
+  console.table(results);
+  start();
+
+})
+})}
+)}
 
