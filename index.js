@@ -144,7 +144,7 @@ inquirer
 })
 .then(function(answer) {
 
-connection.query(`SELECT dt.name as "department", e.first_name as "first name", e.last_name as "last name", e.id as "id", title, salary, m.first_name as "manager" FROM employee e left join role on role.id = e.role_id left join department dt on dt.id = role.department_id left join employee m on m.id = e.manager_id WHERE dt.name = '${answer.department}';`, function(err, results) {
+connection.query(`SELECT dt.name as "Department", e.first_name as "First Name", e.last_name as "Last Name", e.id as "ID", title as "Title", salary as "Salary", m.first_name as "Manager" FROM employee e left join role on role.id = e.role_id left join department dt on dt.id = role.department_id left join employee m on m.id = e.manager_id WHERE dt.name = '${answer.department}';`, function(err, results) {
   if (err) throw err;
   console.table(results);
   start();
@@ -158,13 +158,13 @@ function viewByMgr() {
     let managers = []
 connection.query(`SELECT DISTINCT m.first_name as "manager" FROM employee e left join employee m on m.id = e.manager_id WHERE m.first_name IS NOT NULL;`, function(err, results) {
     if (err) throw err;
-    console.table(results)
+    // console.table(results)
     
     for (let i = 0; i < results.length; i++) {
         let tempMgrs = results[i].manager;
         managers.push(tempMgrs);
     }
-    console.log(managers)
+    // console.log(managers)
 
   inquirer
   .prompt({
@@ -175,14 +175,13 @@ connection.query(`SELECT DISTINCT m.first_name as "manager" FROM employee e left
   })
   .then(function(answer) {
 
-  connection.query(`SELECT m.first_name as "manager", e.first_name as "first name", e.last_name as "last name", e.id as "id", title, salary FROM department dt left join role on dt.id = role.department_id left join employee e on role.id = e.role_id left join employee m on m.id = e.manager_id WHERE m.first_name = '${answer.manager}';`, function(err, results) {
+  connection.query(`SELECT m.first_name as "Manager", e.first_name as "First Name", e.last_name as "Last Name", e.id as "ID", title as "Title", salary as "Salary" FROM department dt left join role on dt.id = role.department_id left join employee e on role.id = e.role_id left join employee m on m.id = e.manager_id WHERE m.first_name = '${answer.manager}';`, function(err, results) {
     if (err) throw err;
     console.table(results);
     start();
 })
   })}
   )}
-
 
 function addEmployee() {
   inquirer
@@ -271,7 +270,6 @@ function addRole() {
   })}
   )}
 
-  
     
   function removeEmployee() {
     let employees = []
@@ -378,16 +376,14 @@ function addRole() {
       start();
     })
       })}
-      )}
-
-    
+      )}  
 
 function updateEmployee() {
 
     let updateEmp = []
     connection.query(`SELECT DISTINCT first_name as "name" FROM employee e WHERE first_name IS NOT NULL;`, function(err, results) {
         if (err) throw err;
-        console.table(results)
+        // console.table(results)
         
         for (let i = 0; i < results.length; i++) {
             let tempUEmp = results[i].name;
@@ -433,7 +429,7 @@ function updateEmployee() {
         }],
   function(err, res) {
     if (err) throw err;
-    // console.log(res.affectedRows + " products updated!\n");
+    
   }
 );
 
@@ -492,7 +488,6 @@ function updateMgr() {
         }],
     function(err, res) {
     if (err) throw err;
-    // console.log(res.affectedRows + " products updated!\n");
     }
 );
 
@@ -501,8 +496,7 @@ function updateMgr() {
 })}
 )}
 
- 
-  // View Employees by Department
+  // Total utilized budget of a department
 function deptSum() {
     let departments = []
 connection.query(`SELECT distinct dt.name as "department" FROM department dt ORDER BY dt.name ASC;`, function(err, results) {
