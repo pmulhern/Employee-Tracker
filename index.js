@@ -376,26 +376,120 @@ function addRole() {
       })}
       )}
 
+    
+
 function updateEmployee() {
-console.log("Updating all Rocky Road quantities...\n");
-var query = connection.query(
-  "UPDATE products SET ? WHERE ?",
-  [
-    {
-      quantity: 100
-    },
-    {
-      flavor: "Rocky Road"
-    }
-  ],
+
+    let updateEmp = []
+    connection.query(`SELECT DISTINCT first_name as "name" FROM employee e WHERE first_name IS NOT NULL;`, function(err, results) {
+        if (err) throw err;
+        console.table(results)
+        
+        for (let i = 0; i < results.length; i++) {
+            let tempUEmp = results[i].name;
+            updateEmp.push(tempUEmp);
+        }
+        // console.log(updateEmp)
+
+    let updateRoles = []
+
+    connection.query(`SELECT CONCAT(title," id- ",id) as "role" FROM role ORDER BY title;`, function(err, results) {
+        if (err) throw err;
+        // console.table(results)
+        
+        for (let i = 0; i < results.length; i++) {
+            let tempURole = results[i].role;
+            updateRoles.push(tempURole);
+        }
+
+        inquirer
+        .prompt([
+        {
+        name: "name",
+        type: "list",
+        message: "Please select an employee?",
+        choices: updateEmp
+        },
+        {
+        name: "RoleID",
+        type: "list",
+        message: "Please select select a new role.",
+        choices: updateRoles
+        }
+        
+        ])
+        .then(function(answer) {
+      
+        connection.query("UPDATE employee SET ? WHERE ?",
+        [{
+        role_id: answer.RoleID.slice(-1)
+        },
+        {
+        first_name: answer.name
+        }],
   function(err, res) {
     if (err) throw err;
-    console.log(res.affectedRows + " products updated!\n");
+    // console.log(res.affectedRows + " products updated!\n");
   }
 );
 
-// logs the actual query being run
-console.log(query.sql);
-}
+        start();
+      })
+        })}
+        )}
+
+
+function updateMgr() {
+
+    let updateEmp = []
+    let updateMgr = []
+    connection.query(`SELECT e.first_name as "name", CONCAT(m.first_name," id- ",m.id) as "manager" FROM employee e left join role on role.id = e.role_id left join department dt on dt.id = role.department_id left join employee m on m.id = e.manager_id;`, function(err, results) {
+        if (err) throw err;
+        console.table(results)
+        
+        for (let i = 0; i < results.length; i++) {
+            let tempUEmp = results[i].name;
+            let tempUMgr = results[i].manager;
+
+            updateEmp.push(tempUEmp);
+            updateMgr.push(tempUMgr);
+
+        }
+
+        inquirer
+        .prompt([
+        {
+        name: "name",
+        type: "list",
+        message: "Please select an employee?",
+        choices: updateEmp
+        },
+        {
+        name: "MgrID",
+        type: "list",
+        message: "Please select select a new manager.",
+        choices: updateMgr
+        }
+        
+        ])
+        .then(function(answer) {
+        
+        connection.query("UPDATE employee SET ? WHERE ?",
+        [{
+        manager_id: answer.MgrID.slice(-1)
+        },
+        {
+        first_name: answer.name
+        }],
+    function(err, res) {
+    if (err) throw err;
+    // console.log(res.affectedRows + " products updated!\n");
+    }
+);
+
+        start();
+        })
+        })};
+
 
 
