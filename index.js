@@ -442,18 +442,23 @@ function updateEmployee() {
 function updateMgr() {
 
     let updateEmp = []
-    let updateMgr = []
     connection.query(`SELECT e.first_name as "name", CONCAT(m.first_name," id- ",m.id) as "manager" FROM employee e left join role on role.id = e.role_id left join department dt on dt.id = role.department_id left join employee m on m.id = e.manager_id;`, function(err, results) {
+        if (err) throw err;
+
+        for (let i = 0; i < results.length; i++) {
+            let tempUEmp = results[i].name;
+            updateEmp.push(tempUEmp);
+
+        }
+
+    let updateMgr = []
+    connection.query(`SELECT DISTINCT CONCAT(m.first_name," id- ",m.id) as "manager" FROM employee e left join role on role.id = e.role_id left join department dt on dt.id = role.department_id left join employee m on m.id = e.manager_id WHERE m.id Is Not Null;`, function(err, results) {
         if (err) throw err;
         console.table(results)
         
         for (let i = 0; i < results.length; i++) {
-            let tempUEmp = results[i].name;
             let tempUMgr = results[i].manager;
-
-            updateEmp.push(tempUEmp);
             updateMgr.push(tempUMgr);
-
         }
 
         inquirer
@@ -488,8 +493,8 @@ function updateMgr() {
 );
 
         start();
-        })
-        })};
-
+    })
+})}
+)}
 
 
