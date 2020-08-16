@@ -59,6 +59,9 @@ To run tests, run the following command:
 ```
 npm test
 ```
+## Opportunities
+
+The code is long and repititive and there is opportunity to re-write and make DRY. 
 
 ## Questions
 
