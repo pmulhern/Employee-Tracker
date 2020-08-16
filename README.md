@@ -2,6 +2,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+![](./demo.gif)
+
 ## Description
 
 A command line application that allows a user to manage employees of a company.  The application features Node.js and MySQL. User has a total of 15 functions including:
