@@ -8,11 +8,11 @@
 
 A command line application that allows a user to manage employees of a company.  The application features Node.js and MySQL. User has a total of 15 functions including:
 
-•	View departments, roles and employees
-•	Add departments, roles and employees
-•	Update employee roles and managers
-•	Delete departments, roles and employees
-•	View the total utilized budget of a department
+*	View departments, roles and employees
+*	Add departments, roles and employees
+*	Update employee roles and managers
+*	Delete departments, roles and employees
+*	View the total utilized budget of a department
 
 All list information is dynamic and reflects the most recent user changes. 
 
