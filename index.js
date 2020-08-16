@@ -126,6 +126,7 @@ function viewAllRoles() {
 // View Employees by Department
 function viewByDept() {
     let departments = []
+    // Pull roles from database first and push to array.  This makes the list dynamic and current.
 connection.query(`SELECT distinct dt.name as "department" FROM department dt ORDER BY dt.name ASC;`, function(err, results) {
     if (err) throw err;
     // console.table(results)
@@ -154,8 +155,10 @@ connection.query(`SELECT dt.name as "Department", e.first_name as "First Name", 
 )}
 
 
+// View employees by Manager function
 function viewByMgr() {
     let managers = []
+    // Pull roles from database first and push to array.  This makes the list dynamic and current.
 connection.query(`SELECT DISTINCT m.first_name as "manager" FROM employee e left join employee m on m.id = e.manager_id WHERE m.first_name IS NOT NULL;`, function(err, results) {
     if (err) throw err;
     // console.table(results)
@@ -183,6 +186,7 @@ connection.query(`SELECT DISTINCT m.first_name as "manager" FROM employee e left
   })}
   )}
 
+  // Add an employee function
 function addEmployee() {
   inquirer
   .prompt([
@@ -212,6 +216,7 @@ function addEmployee() {
   })}
   )}
 
+  // Add a department function
 function addDept() {
   inquirer
   .prompt([
@@ -235,6 +240,7 @@ function addDept() {
   })}
   )}
 
+  // Add a role function
 function addRole() {
   inquirer
   .prompt([
@@ -270,9 +276,10 @@ function addRole() {
   })}
   )}
 
-    
+  // Remove an employee function
   function removeEmployee() {
     let employees = []
+    // Pull employees from database first and push to array.  This makes the list dynamic and current.
     connection.query(`SELECT DISTINCT first_name as "name" FROM employee e WHERE first_name IS NOT NULL;`, function(err, results) {
         if (err) throw err;
         console.table(results)
@@ -306,9 +313,11 @@ function addRole() {
   })}
   )}
 
+  // Remove a department function
   function removeDept() {
 
     let departments = []
+    // Pull departments from database first and push to array.  This makes the list dynamic and current.
     connection.query(`SELECT distinct dt.name as "department" FROM department dt ORDER BY dt.name ASC;`, function(err, results) {
         if (err) throw err;
         console.table(results)
@@ -342,9 +351,11 @@ function addRole() {
     })}
     )}
 
+    // Remove a role function
     function removeRole() {
 
         let roles = []
+        // Pull roles from database first and push to array.  This makes the list dynamic and current.
         connection.query(`SELECT distinct title as "role" FROM role;`, function(err, results) {
             if (err) throw err;
             // console.table(results)
@@ -378,9 +389,10 @@ function addRole() {
       })}
       )}  
 
+// Update employee function
 function updateEmployee() {
-
     let updateEmp = []
+    // Pull employees from database first and push to array.  This makes the list dynamic and current.
     connection.query(`SELECT DISTINCT first_name as "name" FROM employee e WHERE first_name IS NOT NULL;`, function(err, results) {
         if (err) throw err;
         // console.table(results)
@@ -438,10 +450,10 @@ function updateEmployee() {
         })}
         )}
 
-
+// Update employee manager function
 function updateMgr() {
-
     let updateEmp = []
+    // Pull employees from database first and push to array.  This makes the list dynamic and current.
     connection.query(`SELECT e.first_name as "name", CONCAT(m.first_name," id- ",m.id) as "manager" FROM employee e left join role on role.id = e.role_id left join department dt on dt.id = role.department_id left join employee m on m.id = e.manager_id;`, function(err, results) {
         if (err) throw err;
 
@@ -499,6 +511,7 @@ function updateMgr() {
   // Total utilized budget of a department
 function deptSum() {
     let departments = []
+    // Pull departments from database first and push to array.  This makes the list dynamic and current.
 connection.query(`SELECT distinct dt.name as "department" FROM department dt ORDER BY dt.name ASC;`, function(err, results) {
     if (err) throw err;
     // console.table(results)
